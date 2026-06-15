@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
+    <title>(+)Esto Text'o</title>
+    
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="(+)Esto Text'o">
+    
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAxMDAgMTAwJz48cmVjdCB3aWR0aD0nMTAwJyBoZWlnaHQ9JzEwMCcgcng9JzIwJyBmaWxsPScjMGIwYjBiJy8+PHRleHQgeD0nNTAlJyB5PSc1NSUnIGZpbGw9J3doaXRlJyBmb250LWZhbWlseT0nc2Fucy1zZXJpZicgZm9udC13ZWlnaHQ9J2JvbGQnIGZvbnQtc2l6ZT0nNTAnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGRvbWluYW50LWJhc2VsaW5lPSdtaWRkbGUnPkU8L3RleHQ+PC9zdmc+">
+    <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAxMDAgMTAwJz48cmVjdCB3aWR0aD0nMTAwJyBoZWlnaHQ9JzEwMCcgZmlsbD0nIzAwMDAwMCcvPjx0ZXh0IHg9JzUwJScgeT0nNTUlJyBmaWxsPSd3aGl0ZScgZm9udC1mYW1pbHk9J3NhbnMtc2VyaWYnIGZvbnQtd2VpZ2h0PSdib2xkJyBmb250LXNpemU9JzUwJyB0ZXh0LWFuY2hvcj0nbWlkZGxlJyBkb21pbmFudC1iYXNlbGluZT0nbWlkZGxlJz5FPC90ZXh0Pjwvc3ZnPg==">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: #0b0b0b;
+            color: #fff;
+            font-family: monospace;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        #canvas-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 400px; 
+            max-height: 60vh; 
+            aspect-ratio: 3 / 4;
+            border: 1px dashed #333; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background: transparent;
+            margin: auto 0;
+            transition: aspect-ratio 0.2s ease;
+        }
+
+        #canvas {
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 35px;
+            position: relative;
+            background-color: transparent;
+        }
+
+        #canvas::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, var(--bg-dim, 0.0));
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        #editor {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            color: #ffffff;
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            font-weight: 700;
+            font-size: 30px;
+            letter-spacing: -0.04em;
+            line-height: 1.2;
+            text-align: center;
+            outline: none;
+            border: none;
+            background: transparent;
+            word-break: break-word;
+            white-space: pre-wrap;
+            
+            --photo-height: 1.1em;
+        }
+
+        #editor u, 
+        #editor [style*="text-decoration"], 
+        #editor [style*="underline"] {
+            text-decoration: none !important;
+            text-decoration-line: none !important;
+            border-bottom: 0.06em solid currentColor !important;
+            padding-bottom: 0.04em !important;
+            display: inline-block !important;
+            white-space: pre-wrap;
+        }
+
+        #editor .ios-select {
+            background-color: rgba(0, 122, 255, 0.28) !important;
+            position: relative;
+            display: inline-block;
+            padding: 0 2px;
+            border-radius: 2px;
+            text-decoration: none !important;
+            border-bottom: none !important;
+        }
+
+        #editor .ios-select::before {
+            content: '';
+            position: absolute;
+            left: -2px;
+            top: -6px;
+            bottom: -2px;
+            width: 6px;
+            background-image: 
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='6' height='6'%3E%3Ccircle cx='3' cy='3' r='3' fill='%23007aff'/%3E%3C/svg%3E"), 
+                linear-gradient(#007aff, #007aff);
+            background-position: top left, 2px 3px;
+            background-size: 6px 6px, 2px calc(100% - 3px);
+            background-repeat: no-repeat;
+            filter: drop-shadow(0px 1px 2px rgba(0,0,0,0.3));
+            pointer-events: none;
+        }
+
+        #editor .ios-select::after {
+            content: '';
+            position: absolute;
+            right: -2px;
+            top: -2px;
+            bottom: -6px;
+            width: 6px;
+            background-image: 
+                linear-gradient(#007aff, #007aff), 
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='6' height='6'%3E%3Ccircle cx='3' cy='3' r='3' fill='%23007aff'/%3E%3C/svg%3E");
+            background-position: 2px 0, bottom left;
+            background-size: 2px calc(100% - 3px), 6px 6px;
+            background-repeat: no-repeat;
+            filter: drop-shadow(0px 1px 2px rgba(0,0,0,0.3));
+            pointer-events: none;
+        }
+
+        #editor:empty::before {
+            content: "type here...";
+            color: rgba(255, 255, 255, 0.2);
+            pointer-events: none;
+        }
+
+        .inline-slot {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            user-select: none;
+        }
+
+        .inline-photo {
+            display: inline-block;
+            height: var(--photo-height);
+            width: auto; 
+            object-fit: contain; 
+            vertical-align: bottom; 
+            margin: 0 0.1em;
+            cursor: pointer;
+            border-radius: 0 !important;
+            background-color: rgba(255, 255, 255, 0.15);
+            position: relative;
+        }
+
+        #text-popover {
+            position: absolute;
+            display: none;
+            background: #161616;
+            border: 1px solid #333;
+            padding: 2px;
+            gap: 2px;
+            z-index: 100;
+            font-family: monospace;
+            font-size: 11px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.7);
+        }
+
+        .popover-btn {
+            color: #aaa;
+            padding: 6px 10px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .popover-btn:active, .popover-btn:hover {
+            color: #fff;
+            background: #222;
+        }
+
+        .ui-panel {
+            width: 100%;
+            max-width: 600px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+            font-size: 10px;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            padding: 10px 5px;
+            background: #0b0b0b;
+            z-index: 10;
+        }
+
+        .ui-group {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+            border-right: 1px solid #222;
+            padding-right: 10px;
+        }
+
+        .ui-group:last-child {
+            border: none;
+            padding-right: 0;
+        }
+
+        .ui-label {
+            color: #444;
+        }
+
+        .ui-btn {
+            color: #888;
+            cursor: pointer;
+            text-decoration: none;
+            user-select: none;
+            padding: 4px 2px;
+        }
+
+        .ui-btn:hover, .ui-btn:active {
+            color: #fff;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="text-popover">
+        <span class="popover-btn" onmousedown="event.preventDefault(); formatText('bold')" ontouchstart="event.preventDefault(); formatText('bold')">[B]</span>
+        <span class="popover-btn" onmousedown="event.preventDefault(); formatText('italic')" ontouchstart="event.preventDefault(); formatText('italic')">[I]</span>
+        <span class="popover-btn" onmousedown="event.preventDefault(); formatText('underline')" ontouchstart="event.preventDefault(); formatText('underline')">[U]</span>
+        <span class="popover-btn" onmousedown="event.preventDefault(); toggleIOSStyle()" ontouchstart="event.preventDefault(); toggleIOSStyle()" style="color: #007aff;">[Q]</span>
+        <span class="popover-btn" onmousedown="event.preventDefault(); removeCustomStyles()" ontouchstart="event.preventDefault(); removeCustomStyles()" style="color: #ff4444;">[Clr]</span>
+    </div>
+
+    <div id="canvas-wrapper">
+        <div id="canvas">
+            <div id="editor" contenteditable="true" spellcheck="false"></div>
+        </div>
+    </div>
+
+    <div class="ui-panel">
+        <div class="ui-group">
+            <span class="ui-label">BG:</span>
+            <span class="ui-btn" onclick="triggerBgUpload()">[ Up ]</span>
+            <span class="ui-btn" onclick="clearBg()" style="color: #ff4444;">[ Clr ]</span>
+        </div>
+        
+        <div class="ui-group">
+            <span class="ui-label">Base:</span>
+            <span class="ui-btn" id="weight-btn" onclick="toggleWeight()">[ Bold ]</span>
+        </div>
+
+        <div class="ui-group">
+            <span class="ui-label">Align:</span>
+            <span class="ui-btn" id="align-btn" onclick="toggleAlignment()">[ Center ]</span>
+        </div>
+
+        <div class="ui-group">
+            <span class="ui-label">Font:</span>
+            <span class="ui-btn" onclick="adjustFont(2)">[ + ]</span>
+            <span class="ui-btn" onclick="adjustFont(-2)">[ - ]</span>
+        </div>
+
+        <div class="ui-group">
+            <span class="ui-label">Photo:</span>
+            <span class="ui-btn" onclick="adjustPhotoSize(0.1)">[ + ]</span>
+            <span class="ui-btn" onclick="adjustPhotoSize(-0.1)">[ - ]</span>
+        </div>
+
+        <div class="ui-group">
+            <span class="ui-label">Line-H:</span>
+            <span class="ui-btn" onclick="adjustLineHeight(0.04)">[ + ]</span>
+            <span class="ui-btn" onclick="adjustLineHeight(-0.04)">[ - ]</span>
+        </div>
+
+        <div class="ui-group">
+            <span class="ui-label">Track:</span>
+            <span class="ui-btn" onclick="adjustSpacing(-0.01)">[ < ]</span>
+            <span class="ui-btn" onclick="adjustSpacing(0.01)">[ > ]</span>
+        </div>
+
+        <div class="ui-group">
+            <span class="ui-label">Dim:</span>
+            <span class="ui-btn" onclick="setDim(0)">[ 0% ]</span>
+            <span class="ui-btn" onclick="setDim(0.4)">[ 40% ]</span>
+        </div>
+
+        <div class="ui-group">
+            <span class="ui-btn" onclick="toggleColor()">[ Invert ]</span>
+        </div>
+
+        <div class="ui-group">
+            <span class="ui-btn" onclick="export8K()" style="color: #00ff66; font-weight: bold;">[ Save 8K PNG ]</span>
+        </div>
+    </div>
+
+    <input type="file" id="bg-input" accept="image/*">
+    <input type="file" id="inline-photo-input" accept="image/*,image/gif">
+
+    <script>
+        const editor = document.getElementById('editor');
+        const canvas = document.getElementById('canvas');
+        const canvasWrapper = document.getElementById('canvas-wrapper');
+        const bgInput = document.getElementById('bg-input');
+        const inlinePhotoInput = document.getElementById('inline-photo-input');
+        const weightBtn = document.getElementById('weight-btn');
+        const alignBtn = document.getElementById('align-btn');
+        const popover = document.getElementById('text-popover');
+        
+        let currentFontSize = 30;
+        let currentSpacing = -0.04;
+        let currentLineHeight = 1.2;
+        let currentPhotoScale = 1.1; 
+        let activeInlineImgTarget = null;
+
+        const weights = [
+            { name: 'Thin', value: '100' },
+            { name: 'Light', value: '300' },
+            { name: 'Regular', value: '400' },
+            { name: 'Medium', value: '500' },
+            { name: 'Bold', value: '700' },
+            { name: 'Black', value: '900' }
+        ];
+        let weightIndex = 4; 
+
+        const alignments = ['left', 'center', 'right', 'justify'];
+        let alignIndex = 1; 
+
+        const placeholderSvg = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="50" height="35"><rect width="50" height="35" fill="%23222"/><line x1="25" y1="12" x2="25" y2="23" stroke="white" stroke-width="1.5"/><line x1="20" y1="17" x2="30" y2="17" stroke="white" stroke-width="1.5"/></svg>`;
+
+        function saveState() {
+            try {
+                const state = {
+                    html: editor.innerHTML,
+                    bgImage: canvas.style.backgroundImage,
+                    aspectRatio: canvasWrapper.style.aspectRatio,
+                    color: editor.style.color,
+                    fontWeight: editor.style.fontWeight,
+                    textAlign: editor.style.textAlign,
+                    fontSize: currentFontSize,
+                    spacing: currentSpacing,
+                    lineHeight: currentLineHeight,
+                    photoScale: currentPhotoScale,
+                    dim: canvas.style.getPropertyValue('--bg-dim')
+                };
+                localStorage.setItem('layoutStudioState', JSON.stringify(state));
+            } catch (e) {
+                try {
+                    const stateWithoutBg = {
+                        html: editor.innerHTML,
+                        bgImage: 'none',
+                        aspectRatio: '3 / 4',
+                        color: editor.style.color,
+                        fontWeight: editor.style.fontWeight,
+                        textAlign: editor.style.textAlign,
+                        fontSize: currentFontSize,
+                        spacing: currentSpacing,
+                        lineHeight: currentLineHeight,
+                        photoScale: currentPhotoScale,
+                        dim: canvas.style.getPropertyValue('--bg-dim')
+                    };
+                    localStorage.setItem('layoutStudioState', JSON.stringify(stateWithoutBg));
+                } catch(err) {}
+            }
+        }
+
+        function loadState() {
+            try {
+                const saved = localStorage.getItem('layoutStudioState');
+                if (saved) {
+                    const state = JSON.parse(saved);
+                    
+                    if (state.html) editor.innerHTML = state.html;
+                    if (state.bgImage && state.bgImage !== 'none') {
+                        canvas.style.backgroundImage = state.bgImage;
+                        canvasWrapper.style.border = 'none';
+                    }
+                    if (state.aspectRatio) canvasWrapper.style.aspectRatio = state.aspectRatio;
+                    if (state.color) editor.style.color = state.color;
+                    if (state.fontWeight) {
+                        editor.style.fontWeight = state.fontWeight;
+                        syncToolbar(); 
+                    }
+                    if (state.textAlign) {
+                        editor.style.textAlign = state.textAlign;
+                        syncToolbar();
+                    }
+                    if (state.fontSize) {
+                        currentFontSize = state.fontSize;
+                        editor.style.fontSize = currentFontSize + 'px';
+                    }
+                    if (state.spacing) {
+                        currentSpacing = state.spacing;
+                        editor.style.letterSpacing = currentSpacing + 'em';
+                    }
+                    if (state.lineHeight) {
+                        currentLineHeight = state.lineHeight;
+                        editor.style.lineHeight = currentLineHeight;
+                    }
+                    if (state.photoScale) {
+                        currentPhotoScale = state.photoScale;
+                        editor.style.setProperty('--photo-height', currentPhotoScale + 'em');
+                    }
+                    if (state.dim !== undefined) {
+                        canvas.style.setProperty('--bg-dim', state.dim);
+                    }
+                }
+            } catch (e) {}
+        }
+
+        window.addEventListener('DOMContentLoaded', loadState);
+
+        editor.addEventListener('input', () => { 
+            checkAndReplaceBrackets(); 
+            syncToolbar(); 
+            saveState();
+        });
+
+        function syncToolbar() {
+            const computedWeight = editor.style.fontWeight || '700';
+            const wIdx = weights.findIndex(w => w.value === computedWeight.toString());
+            if (wIdx !== -1) {
+                weightIndex = wIdx;
+                weightBtn.innerText = `[ ${weights[wIdx].name} ]`;
+            }
+
+            const computedAlign = editor.style.textAlign || 'center';
+            const aIdx = alignments.indexOf(computedAlign);
+            if (aIdx !== -1) {
+                alignIndex = aIdx;
+                alignBtn.innerText = `[ ${computedAlign.charAt(0).toUpperCase() + computedAlign.slice(1)} ]`;
+            }
+        }
+
+        document.addEventListener('selectionchange', () => {
+            const sel = window.getSelection();
+            syncToolbar();
+
+            if (!sel.toString().trim() || sel.isCollapsed) {
+                popover.style.display = 'none';
+                return;
+            }
+
+            if (!editor.contains(sel.anchorNode)) {
+                popover.style.display = 'none';
+                return;
+            }
+
+            const range = sel.getRangeAt(0);
+            const rect = range.getBoundingClientRect();
+
+            popover.style.display = 'flex';
+            popover.style.top = `${rect.top + window.scrollY - popover.offsetHeight - 8}px`;
+            popover.style.left = `${rect.left + window.scrollX + (rect.width / 2) - (popover.offsetWidth / 2)}px`;
+        });
+
+        function formatText(command) {
+            document.execCommand('styleWithCSS', false, false);
+            document.execCommand(command, false, null);
+            saveState();
+        }
+
+        function toggleIOSStyle() {
+            const sel = window.getSelection();
+            if (!sel.rangeCount || sel.isCollapsed) return;
+
+            let node = sel.anchorNode;
+            while (node && node !== editor) {
+                if (node.nodeType === Node.ELEMENT_NODE && node.classList.contains('ios-select')) {
+                    const parent = node.parentNode;
+                    while (node.firstChild) { parent.insertBefore(node.firstChild, node); }
+                    parent.removeChild(node);
+                    popover.style.display = 'none';
+                    saveState();
+                    return;
+                }
+                node = node.parentNode;
+            }
+
+            const range = sel.getRangeAt(0);
+            const span = document.createElement('span');
+            span.className = 'ios-select';
+
+            try {
+                range.surroundContents(span);
+            } catch (e) {
+                const html = range.cloneContents();
+                span.appendChild(html);
+                range.deleteContents();
+                range.insertNode(span);
+            }
+            popover.style.display = 'none';
+            saveState();
+        }
+
+        function removeCustomStyles() {
+            document.execCommand('styleWithCSS', false, false);
+            document.execCommand('removeFormat', false, null);
+
+            const sel = window.getSelection();
+            if (!sel.rangeCount) return;
+
+            let node = sel.anchorNode;
+            while (node && node !== editor) {
+                if (node.nodeType === Node.ELEMENT_NODE && node.classList.contains('ios-select')) {
+                    const parent = node.parentNode;
+                    while (node.firstChild) { parent.insertBefore(node.firstChild, node); }
+                    parent.removeChild(node);
+                    break;
+                }
+                node = node.parentNode;
+            }
+            popover.style.display = 'none';
+            saveState();
+        }
+
+        function insertNodeAtCaret(node) {
+            let sel = window.getSelection();
+            if (sel.getRangeAt && sel.rangeCount) {
+                let range = sel.getRangeAt(0);
+                range.deleteContents();
+                range.insertNode(node);
+                range.setStartAfter(node);
+                range.collapse(true);
+                sel.removeAllRanges();
+                sel.addRange(range);
+            }
+        }
+
+        function checkAndReplaceBrackets() {
+            const sel = window.getSelection();
+            if (!sel.rangeCount) return;
+            const range = sel.getRangeAt(0);
+            const node = range.startContainer;
+            const offset = range.startOffset;
+
+            if (node.nodeType === Node.TEXT_NODE) {
+                const text = node.textContent;
+                if (offset >= 2 && text.substring(offset - 2, offset) === "()") {
+                    node.textContent = text.substring(0, offset - 2) + text.substring(offset);
+
+                    const slotSpan = document.createElement('span');
+                    slotSpan.className = 'inline-slot';
+                    slotSpan.contentEditable = 'false';
+                    
+                    const openBrace = document.createTextNode('(');
+                    const img = document.createElement('img');
+                    img.className = 'inline-photo';
+                    img.src = placeholderSvg;
+                    const closeBrace = document.createTextNode(')');
+
+                    slotSpan.appendChild(openBrace);
+                    slotSpan.appendChild(img);
+                    slotSpan.appendChild(closeBrace);
+
+                    range.setStart(node, offset - 2);
+                    range.collapse(true);
+                    insertNodeAtCaret(slotSpan);
+                    
+                    const space = document.createTextNode(' ');
+                    insertNodeAtCaret(space);
+                }
+            }
+        }
+        
+        editor.addEventListener('keydown', (e) => {
+            if (e.key === ')') { setTimeout(checkAndReplaceBrackets, 1); }
+        });
+
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('inline-photo')) {
+                activeInlineImgTarget = e.target;
+                inlinePhotoInput.click();
+            }
+        });
+
+        inlinePhotoInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file && activeInlineImgTarget) {
+                const reader = new FileReader();
+                reader.onload = (evt) => { 
+                    activeInlineImgTarget.src = evt.target.result; 
+                    saveState();
+                };
+                reader.readAsDataURL(file);
+            }
+            e.target.value = ''; 
+        });
+
+        function triggerBgUpload() { bgInput.click(); }
+        
+        bgInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (evt) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        canvasWrapper.style.aspectRatio = `${img.naturalWidth} / ${img.naturalHeight}`;
+                        canvas.style.backgroundImage = `url('${evt.target.result}')`;
+                        canvasWrapper.style.border = 'none';
+                        saveState();
+                    };
+                    img.src = evt.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        function clearBg() {
+            canvas.style.backgroundImage = 'none';
+            canvasWrapper.style.border = '1px dashed #333';
+            canvasWrapper.style.aspectRatio = '3 / 4'; 
+            saveState();
+        }
+
+        function toggleWeight() {
+            weightIndex = (weightIndex + 1) % weights.length;
+            editor.style.fontWeight = weights[weightIndex].value;
+            weightBtn.innerText = `[ ${weights[weightIndex].name} ]`;
+            saveState();
+        }
+
+        function toggleAlignment() {
+            alignIndex = (alignIndex + 1) % alignments.length;
+            editor.style.textAlign = alignments[alignIndex];
+            alignBtn.innerText = `[ ${alignments[alignIndex].charAt(0).toUpperCase() + alignments[alignIndex].slice(1)} ]`;
+            saveState();
+        }
+
+        function adjustFont(val) {
+            currentFontSize += val;
+            editor.style.fontSize = currentFontSize + 'px';
+            saveState();
+        }
+
+        function adjustPhotoSize(val) {
+            currentPhotoScale += val;
+            if (currentPhotoScale < 0.2) currentPhotoScale = 0.2;
+            editor.style.setProperty('--photo-height', currentPhotoScale + 'em');
+            saveState();
+        }
+
+        function adjustLineHeight(val) {
+            currentLineHeight += val;
+            if (currentLineHeight < 0.4) currentLineHeight = 0.4;
+            editor.style.lineHeight = currentLineHeight;
+            saveState();
+        }
+
+        function adjustSpacing(val) {
+            currentSpacing += val;
+            editor.style.letterSpacing = currentSpacing + 'em';
+            saveState();
+        }
+
+        function setDim(val) { 
+            canvas.style.setProperty('--bg-dim', val); 
+            saveState();
+        }
+
+        function toggleColor() {
+            if (editor.style.color === 'black' || editor.style.color === 'rgb(0, 0, 0)') {
+                editor.style.color = '#ffffff';
+            } else {
+                editor.style.color = '#000000';
+            }
+            saveState();
+        }
+
+        function export8K() {
+            editor.blur();
+            popover.style.display = 'none';
+            
+            const originalBorder = canvasWrapper.style.border;
+            canvasWrapper.style.border = 'none';
+
+            const targetWidth = 4320; 
+            const currentWidth = canvas.offsetWidth;
+            const dynamicScale = targetWidth / currentWidth;
+
+            html2canvas(canvas, {
+                scale: dynamicScale, 
+                useCORS: true,
+                allowTaint: true,
+                backgroundColor: null 
+            }).then(renderCanvas => {
+                canvasWrapper.style.border = originalBorder;
+                
+                const link = document.createElement('a');
+                link.download = `8k_layout_${Date.now()}.png`;
+                link.href = renderCanvas.toDataURL('image/png');
+                link.click();
+            }).catch(err => {
+                canvasWrapper.style.border = originalBorder;
+                console.error("Ошибка рендера:", err);
+            });
+        }
+    </script>
+</body>
+</html>
