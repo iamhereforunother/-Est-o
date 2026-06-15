@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     
     <title>(+)Esto Text'o</title>
     
@@ -10,8 +10,10 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="(+)Esto Text'o">
     
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAxMDAgMTAwJz48cmVjdCB3aWR0aD0nMTAwJyBoZWlnaHQ9JzEwMCcgcng9JzIwJyBmaWxsPScjMGIwYjBiJy8+PHRleHQgeD0nNTAlJyB5PSc1NSUnIGZpbGw9J3doaXRlJyBmb250LWZhbWlseT0nc2Fucy1zZXJpZicgZm9udC13ZWlnaHQ9J2JvbGQnIGZvbnQtc2l6ZT0nNTAnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGRvbWluYW50LWJhc2VsaW5lPSdtaWRkbGUnPkU8L3RleHQ+PC9zdmc+">
-    <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAxMDAgMTAwJz48cmVjdCB3aWR0aD0nMTAwJyBoZWlnaHQ9JzEwMCcgZmlsbD0nIzAwMDAwMCcvPjx0ZXh0IHg9JzUwJScgeT0nNTUlJyBmaWxsPSd3aGl0ZScgZm9udC1mYW1pbHk9J3NhbnMtc2VyaWYnIGZvbnQtd2VpZ2h0PSdib2xkJyBmb250LXNpemU9JzUwJyB0ZXh0LWFuY2hvcj0nbWlkZGxlJyBkb21pbmFudC1iYXNlbGluZT0nbWlkZGxlJz5FPC90ZXh0Pjwvc3ZnPg==">
+    <!-- Фавикон со знаком % -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAxMDAgMTAwJz48cmVjdCB3aWR0aD0nMTAwJyBoZWlnaHQ9JzEwMCcgcng9JzIwJyBmaWxsPScjMGIwYjBiJy8+PHRleHQgeD0nNTAlJyB5PSc1NSUnIGZpbGw9J3doaXRlJyBmb250LWZhbWlseT0nc2Fucy1zZXJpZicgZm9udC13ZWlnaHQ9J2JvbGQnIGZvbnQtc2l6ZT0nNjAnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGRvbWluYW50LWJhc2VsaW5lPSdtaWRkbGUnPiU8L3RleHQ+PC9zdmc+">
+    <!-- Иконка для Apple со знаком % -->
+    <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAxMDAgMTAwJz48cmVjdCB3aWR0aD0nMTAwJyBoZWlnaHQ9JzEwMCcgZmlsbPScjMDAwMDAwJy8+PHRleHQgeD0nNTAlJyB5PSc1NSUnIGZpbGw9J3doaXRlJyBmb250LWZhbWlseT0nc2Fucy1zZXJpZicgZm9udC13ZWlnaHQ9J2JvbGQnIGZvbnQtc2l6ZT0nNjAnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGRvbWluYW50LWJhc2VsaW5lPSdtaWRkbGUnPiU8L3RleHQ+PC9zdmc+">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     
@@ -27,21 +29,32 @@
             background-color: #0b0b0b;
             color: #fff;
             font-family: monospace;
+            /* Исправление для iOS: используем dvh для динамической высоты вьюпорта */
+            height: 100dvh;
+            /* Фолбэк для старых браузеров */
             min-height: 100vh;
+            
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: space-between;
-            padding: 15px;
             overflow: hidden;
             position: relative;
+            
+            /* Учитываем safe area сверху (для челки/бара) */
+            padding-top: env(safe-area-inset-top, 15px);
+            padding-left: 15px;
+            padding-right: 15px;
+            /* Снизу padding убираем, он будет в ui-panel */
+            padding-bottom: 0;
         }
 
         #canvas-wrapper {
             position: relative;
             width: 100%;
             max-width: 400px; 
-            max-height: 60vh; 
+            /* Ограничиваем высоту, чтобы влезало меню */
+            max-height: 55dvh; 
             aspect-ratio: 3 / 4;
             border: 1px dashed #333; 
             display: flex;
@@ -212,9 +225,11 @@
             font-size: 10px;
             letter-spacing: 0.05em;
             text-transform: uppercase;
-            padding: 10px 5px;
             background: #0b0b0b;
             z-index: 10;
+            
+            /* Исправление для iOS: добавляем padding снизу с учетом safe area */
+            padding: 10px 5px calc(10px + env(safe-area-inset-bottom, 15px));
         }
 
         .ui-group {
@@ -257,7 +272,7 @@
         <span class="popover-btn" onmousedown="event.preventDefault(); formatText('bold')" ontouchstart="event.preventDefault(); formatText('bold')">[B]</span>
         <span class="popover-btn" onmousedown="event.preventDefault(); formatText('italic')" ontouchstart="event.preventDefault(); formatText('italic')">[I]</span>
         <span class="popover-btn" onmousedown="event.preventDefault(); formatText('underline')" ontouchstart="event.preventDefault(); formatText('underline')">[U]</span>
-        <span class="popover-btn" onmousedown="event.preventDefault(); toggleIOSStyle()" ontouchstart="event.preventDefault(); toggleIOSStyle()" style="color: #007aff;">[Q]</span>
+        <span class="popover-btn" onmousedown="event.preventDefault(); toggleIOSStyle()" ontouchstart="event.preventDefault(); toggleIOSStyle()" style="color: #007aff;">[iOS]</span>
         <span class="popover-btn" onmousedown="event.preventDefault(); removeCustomStyles()" ontouchstart="event.preventDefault(); removeCustomStyles()" style="color: #ff4444;">[Clr]</span>
     </div>
 
