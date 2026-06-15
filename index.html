@@ -10,10 +10,10 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="(+)Esto Text'o">
     
-    <!-- Фавикон со знаком % -->
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAxMDAgMTAwJz48cmVjdCB3aWR0aD0nMTAwJyBoZWlnaHQ9JzEwMCcgcng9JzIwJyBmaWxsPScjMGIwYjBiJy8+PHRleHQgeD0nNTAlJyB5PSc1NSUnIGZpbGw9J3doaXRlJyBmb250LWZhbWlseT0nc2Fucy1zZXJpZicgZm9udC13ZWlnaHQ9J2JvbGQnIGZvbnQtc2l6ZT0nNjAnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGRvbWluYW50LWJhc2VsaW5lPSdtaWRkbGUnPiU8L3RleHQ+PC9zdmc+">
-    <!-- Иконка для Apple со знаком % -->
-    <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAxMDAgMTAwJz48cmVjdCB3aWR0aD0nMTAwJyBoZWlnaHQ9JzEwMCcgZmlsbPScjMDAwMDAwJy8+PHRleHQgeD0nNTAlJyB5PSc1NSUnIGZpbGw9J3doaXRlJyBmb250LWZhbWlseT0nc2Fucy1zZXJpZicgZm9udC13ZWlnaHQ9J2JvbGQnIGZvbnQtc2l6ZT0nNjAnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGRvbWluYW50LWJhc2VsaW5lPSdtaWRkbGUnPiU8L3RleHQ+PC9zdmc+">
+    <!-- Новый фавикон (+) в Base64 -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiB2aWV3Qm94PSIwIDAgMjAwIDIwMCI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0id2hpdGUiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkhlbHZldGljYSwgQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTIwIiBmb250LXdlaWdodD0iNDAwIj4oKyk8L3RleHQ+PC9zdmc+">
+    <!-- Иконка Apple (+) в Base64 -->
+    <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiB2aWV3Qm94PSIwIDAgMjAwIDIwMCI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0id2hpdGUiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkhlbHZldGljYSwgQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTIwIiBmb250LXdlaWdodD0iNDAwIj4oKyk8L3RleHQ+PC9zdmc+">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     
@@ -29,11 +29,8 @@
             background-color: #0b0b0b;
             color: #fff;
             font-family: monospace;
-            /* Исправление для iOS: используем dvh для динамической высоты вьюпорта */
             height: 100dvh;
-            /* Фолбэк для старых браузеров */
             min-height: 100vh;
-            
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -41,11 +38,9 @@
             overflow: hidden;
             position: relative;
             
-            /* Учитываем safe area сверху (для челки/бара) */
             padding-top: env(safe-area-inset-top, 15px);
             padding-left: 15px;
             padding-right: 15px;
-            /* Снизу padding убираем, он будет в ui-panel */
             padding-bottom: 0;
         }
 
@@ -53,7 +48,6 @@
             position: relative;
             width: 100%;
             max-width: 400px; 
-            /* Ограничиваем высоту, чтобы влезало меню */
             max-height: 55dvh; 
             aspect-ratio: 3 / 4;
             border: 1px dashed #333; 
@@ -227,8 +221,6 @@
             text-transform: uppercase;
             background: #0b0b0b;
             z-index: 10;
-            
-            /* Исправление для iOS: добавляем padding снизу с учетом safe area */
             padding: 10px 5px calc(10px + env(safe-area-inset-bottom, 15px));
         }
 
